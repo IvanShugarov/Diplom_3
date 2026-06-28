@@ -10,7 +10,7 @@ class TestForgotPassword:
         auth_page.open_url(Urls.LOGIN_URL)
         auth_page.click_forgot_password_link()
         element = auth_page.find_element_with_wait(AuthLocators.BUTTON_RESTORE)
-        assert "/forgot-password" in driver.current_url
+        assert "/forgot-password" in auth_page.get_current_url()
         assert element.is_displayed()
 
     @allure.title("Проверка перехода на страница создания нового пароля")    
@@ -20,7 +20,7 @@ class TestForgotPassword:
         auth_page.input_email_for_restore("test_user@yandex.ru")
         auth_page.click_element(AuthLocators.BUTTON_RESTORE)
         element = auth_page.find_element_with_wait(AuthLocators.BUTTON_SHOW_HIDE_PASSWORD)
-        assert "/reset-password" in driver.current_url
+        assert "/reset-password" in auth_page.get_current_url()
         assert element.is_displayed()
 
     @allure.title("Проверка, что по клику на иконку глаза пароль становится видимым")

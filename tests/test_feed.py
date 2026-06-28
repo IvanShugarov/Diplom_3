@@ -4,8 +4,7 @@ from pages.feed_page import FeedPage
 from pages.auth_page import AuthPage
 from pages.main_page import MainPage
 from locators.feed_locators import FeedLocators
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+
 
 class TestFeed:
     @allure.title("Проверка успешного открытия окна с деталями заказа")
@@ -13,9 +12,10 @@ class TestFeed:
         feed_page = FeedPage(driver)
         feed_page.open_url(Urls.FEED_URL)
         feed_page.click_order_card_in_feed()
-        WebDriverWait(driver,10).until(EC.url_changes(Urls.FEED_URL))
-        assert driver.current_url != Urls.FEED_URL
-        assert "/feed/" in driver.current_url
+        feed_page.wait_for_url_to_change(Urls.FEED_URL)
+        current_url = feed_page.get_current_url()
+        assert current_url != Urls.FEED_URL
+        assert "/feed/" in current_url
 
     @allure.title("Проверка успешного обновления счётчиков при создании заказа")
     def test_counters_update_success(self, driver, user_data):

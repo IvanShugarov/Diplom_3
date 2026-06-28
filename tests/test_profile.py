@@ -5,8 +5,7 @@ from pages.auth_page import AuthPage
 from pages.main_page import MainPage
 from pages.profile_page import ProfilePage
 from locators.profile_locators import ProfileLocators
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+
 
 class TestProfile:
     @allure.title("Проверка успешного перехода в 'Личный кабинет'")
@@ -14,12 +13,12 @@ class TestProfile:
         auth_page = AuthPage(driver)
         auth_page.open_url(Urls.LOGIN_URL)
         auth_page.login_user(user_data["email"],user_data["password"])
-        WebDriverWait(driver, 5).until(EC.url_to_be(Urls.BASE_URL))
+        auth_page.wait_for_url_to_change(Urls.LOGIN_URL)
         main_page = MainPage(driver)
         main_page.click_personal_account_button()
         profile_page = ProfilePage(driver)
         element = profile_page.find_element_with_wait(ProfileLocators.BUTTON_LOGOUT)
-        assert "/account/profile" in driver.current_url
+        assert "/account/profile" in profile_page.get_current_url()
         assert element.is_displayed()
 
     @allure.title("Проверка успешного перехода на страницу 'История Заказов'")
@@ -27,13 +26,13 @@ class TestProfile:
         auth_page = AuthPage(driver)
         auth_page.open_url(Urls.LOGIN_URL)
         auth_page.login_user(user_data["email"],user_data["password"])
-        WebDriverWait(driver, 5).until(EC.url_to_be(Urls.BASE_URL))
+        auth_page.wait_for_url_to_change(Urls.LOGIN_URL)
         main_page = MainPage(driver)
         main_page.click_personal_account_button()
         profile_page = ProfilePage(driver)
         profile_page.click_order_history_link()
         element = profile_page.find_element_with_wait(ProfileLocators.LINK_ORDER_HISTORY)
-        assert "/account/order-history" in driver.current_url
+        assert "/account/order-history" in profile_page.get_current_url()
         assert element.is_displayed()
          
     @allure.title("Проверка успешного выхода из аккаунта")
@@ -41,12 +40,12 @@ class TestProfile:
         auth_page = AuthPage(driver)
         auth_page.open_url(Urls.LOGIN_URL)
         auth_page.login_user(user_data["email"],user_data["password"])
-        WebDriverWait(driver, 5).until(EC.url_to_be(Urls.BASE_URL))
+        auth_page.wait_for_url_to_change(Urls.LOGIN_URL)
         main_page = MainPage(driver)
         main_page.click_personal_account_button()
         profile_page = ProfilePage(driver)
         profile_page.click_logout_button()
-        WebDriverWait(driver, 10).until(EC.url_to_be(Urls.LOGIN_URL))
+        profile_page.wait_for_url_to_be(Urls.LOGIN_URL)
         element = auth_page.find_element_with_wait(AuthLocators.BUTTON_LOGIN)
-        assert "/login" in driver.current_url
+        assert "/login" in auth_page.get_current_url()
         assert element.is_displayed()

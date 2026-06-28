@@ -5,8 +5,7 @@ from pages.main_page import MainPage
 from locators.main_page_locators import MainPageLocators
 from pages.feed_page import FeedPage
 from locators.feed_locators import FeedLocators
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+
 
 class TestConstructor:
     @allure.title("Проверка перехода в Конструктор заказа")
@@ -15,17 +14,17 @@ class TestConstructor:
         main_page.open_url(Urls.LOGIN_URL)
         main_page.click_counstructor_button()
         element = main_page.find_element_with_wait(MainPageLocators.TITLE_CONSTRUCTOR)
-        assert driver.current_url == Urls.BASE_URL
+        assert main_page.get_current_url() == Urls.BASE_URL
         assert element.is_displayed()
 
-    @allure.title("Проверка перехода в Ленту заказов")
+    @allure.title("Проверка перехода в 'Лента заказов'")
     def test_navigate_to_feed_success(self, driver):
         main_page = MainPage(driver)
         main_page.open_url(Urls.BASE_URL)
         main_page.click_order_feed_header_button()
         feed_page = FeedPage(driver)
         element = feed_page.find_element_with_wait(FeedLocators.TITLE_FEED)
-        assert "/feed" in driver.current_url
+        assert "/feed" in main_page.get_current_url()
         assert element.is_displayed()
 
     @allure.title("Проверка, что по клику на ингредиент всплывает окно с деталями")
@@ -60,7 +59,7 @@ class TestConstructor:
         auth_page = AuthPage(driver)
         auth_page.open_url(Urls.LOGIN_URL)
         auth_page.login_user(user_data["email"], user_data["password"])
-        WebDriverWait(driver, 15).until(EC.url_to_be(Urls.BASE_URL))
+        auth_page.wait_for_url_to_change(Urls.LOGIN_URL)
         main_page = MainPage(driver)
         main_page.drag_and_drop_ingredient_to_order()
         main_page.click_create_order_button()
